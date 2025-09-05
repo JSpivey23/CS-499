@@ -1,0 +1,23 @@
+:host {
+  display: block;
+} 
+.card {
+  height: 100%;
+}
+.card-header,
+.card-subtitle.text-muted {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.card-img-fixed {
+  height: 160px; 
+  object-fit: cover;
+}
+.trip-desc {
+  max-height: 8rem;
+  overflow: auto;
+}
+.card {
+  border-radius: 0.5rem;
+}
