@@ -1,3 +1,15 @@
+To Launch Project:
+
+Pull down the repo.
+Open a terminal and run "npm install" to get the needed dependencies.
+CD to app_admin and run "npm install" once more.
+The Admin Angular portion of the project will be run by navigating to the app_admin folder and typing "npx ng serve" or "ng serve"
+The other portion of the project can be run from the main directory in another terminal by running "npm start".
+Both portions of the project need to be run for this to run smoothly as the Angular portion serves up some portions of the project.
+
+
+***FROM ORIGINAL PROJECT***
+
 In this project, I worked with two unique types of frontends. Express and Angular. The Express based frontend for the customer facing portion of the application followed a more traditional style approach to web development. Each route returned a complete HTML page that needed to be loaded in each time a view was switched. The Angular based administration SPA was used for a much more dynamic and fluid user experience. It enabled the application to swap between views more quickly and served as an interesting comparison piece to the more traditional Express approach. 
 
 The backend used MongoDB because we did not necessarily need to adhere to a strict SQL data structure. This flexibility allows us to create different types of trips under the same umbrella with varying structures. This is especially useful when booking different types of trips where different modes of travel are needed and the structure might be all over the place.
