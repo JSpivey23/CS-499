@@ -7,6 +7,9 @@ The Admin Angular portion of the project will be run by navigating to the app_ad
 The other portion of the project can be run from the main directory in another terminal by running "npm start".
 Both portions of the project need to be run for this to run smoothly as the Angular portion serves up some portions of the project.
 
+The admin portal is available on localhost:4200
+The customer facing project is available at localhost:3000
+
 
 ***FROM ORIGINAL PROJECT***
 
