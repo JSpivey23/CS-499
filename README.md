@@ -10,6 +10,8 @@ Both portions of the project need to be run for this to run smoothly as the Angu
 The admin portal is available on localhost:4200
 The customer facing project is available at localhost:3000
 
+The JWT secret is not provided. You will need to make your own and submit it in the base folder of the project with the file name ".env"
+
 
 ***FROM ORIGINAL PROJECT***
 
