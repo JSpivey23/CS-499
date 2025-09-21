@@ -37,7 +37,7 @@ function authenticateJWT(req, res, next) {
       if (err) {
         return res.sendStatus(401).json("Token Validation Error!");
       }
-      req.auth = verified; // Set the auth paramto the decoded object
+      req.auth = verified; // Set the auth param to the decoded object
     }
   );
   next(); // We need to continue or this will hang forever
