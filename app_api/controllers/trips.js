@@ -32,15 +32,29 @@ const tripsFindByCode = async (req, res) => {
 };
 
 const tripsAddTrip = async (req, res) => {
+  if (!req.user || !req.user.isAdmin) {
+    return res
+      .status(403)
+      .json({ message: "Not Authorized to Create Trips. Must be an admin." });
+  }
+
+ const exists = await Trip.exists({ code: req.body.code });
+    if (exists) {
+      return res.status(409).json({ message: "Code is already in use. Try another." });
+    }
+
+  const normalizeTripRequest = (tripParameter) => {
+    trim().toLowerCase.tripParameter
+  }
   const newTrip = new Trip({
-    code: req.body.code,
-    name: req.body.name,
-    length: req.body.length,
-    start: req.body.start,
-    resort: req.body.resort,
-    perPerson: req.body.perPerson,
+    code: normalizeTripRequest(req.body.code),
+    name: normalizeTripRequest(req.body.name),
+    length:normalizeTripRequest(req.body.length),
+    start: normalizeTripRequest(req.body.start),
+    resort: normalizeTripRequest(req.body.resort),
+    perPerson: normalizeTripRequest(req.body.perPerson),
     image: req.body.image,
-    description: req.body.description,
+    description: normalizeTripRequest(req.body.description),
   });
 
   const q = await newTrip.save();
@@ -58,6 +72,11 @@ const tripsAddTrip = async (req, res) => {
 
 // and JSON message to the requesting client
 const tripsUpdateTrip = async (req, res) => {
+  if (!req.user || !req.user.isAdmin) {
+    return res
+      .status(403)
+      .json({ message: "Not Authorized to Update Trips. Must be an admin." });
+  }
   // Uncomment for debugging
   console.log(req.params);
   console.log(req.body);
@@ -72,6 +91,10 @@ const tripsUpdateTrip = async (req, res) => {
       perPerson: req.body.perPerson,
       image: req.body.image,
       description: req.body.description,
+    },
+    {
+      new: true,
+      returnDocument: "after",
     }
   ).exec();
   if (!q) {
@@ -82,8 +105,7 @@ const tripsUpdateTrip = async (req, res) => {
     return res.status(201).json(q);
   }
   // Uncomment the following line to show results of
-  operation;
-  // on the console
+  // operation on the console
   // console.log(q);
 };
 

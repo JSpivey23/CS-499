@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const jwt = require("jsonwebtoken"); // Enable JSON Web Tokens
+const User = require("../models/user");
 
 const tripsController = require("../controllers/trips");
 const authController = require("../controllers/authentication");
@@ -8,39 +9,28 @@ const authController = require("../controllers/authentication");
 router.route("/register").post(authController.register);
 router.route("/login").post(authController.login);
 
-// Method to authenticate our JWT
-function authenticateJWT(req, res, next) {
-  // console.log('In Middleware');
+//Method to authenticate our JWT
+async function authenticateJWT(req, res, next) {
   const authHeader = req.headers["authorization"];
-  // console.log('Auth Header: ' + authHeader);
-  if (authHeader == null) {
-    console.log("Auth Header Required but NOT PRESENT!");
-    return res.sendStatus(401);
+  if (!authHeader) return res.status(401).json({ message: "Authorization required" });
+
+  const [scheme, token] = authHeader.split(" ");
+  if (scheme !== "Bearer" || !token) {
+    return res.status(401).json({ message: "Authorization required" });
   }
-  let headers = authHeader.split(" ");
-  if (headers.length < 1) {
-    console.log("Not enough tokens in Auth Header: " + headers.length);
-    return res.sendStatus(501);
+
+  try {
+    const payload = jwt.verify(token, process.env.JWT_SECRET);
+    const user = await User.findById(payload._id)
+      .select("_id email name isAdmin")
+      .lean();
+    if (!user) return res.status(401).json({ message: "Invalid token" });
+
+    req.user = user;
+    return next();
+  } catch (e) {
+    return res.status(401).json({ message: "Invalid or expired token" });
   }
-  const token = authHeader.split(" ")[1];
-  // console.log('Token: ' + token);
-  if (token == null) {
-    console.log("Null Bearer Token");
-    return res.sendStatus(401);
-  }
-  // console.log(process.env.JWT_SECRET);
-  // console.log(jwt.decode(token));
-  const verified = jwt.verify(
-    token,
-    process.env.JWT_SECRET,
-    (err, verified) => {
-      if (err) {
-        return res.sendStatus(401).json("Token Validation Error!");
-      }
-      req.auth = verified; // Set the auth param to the decoded object
-    }
-  );
-  next(); // We need to continue or this will hang forever
 }
 
 router

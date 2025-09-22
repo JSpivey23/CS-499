@@ -8,6 +8,8 @@ const userSchema = new mongoose.Schema({
     type: String,
     unique: true,
     required: true,
+    trim: true, 
+    lowercase: true
   },
   name: {
     type: String,
@@ -15,6 +17,10 @@ const userSchema = new mongoose.Schema({
   },
   hash: String,
   salt: String,
+  isAdmin: {
+    type: Boolean,
+    default:false
+  }
 });
 
 

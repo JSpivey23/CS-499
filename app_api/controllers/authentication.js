@@ -2,15 +2,36 @@ const mongoose = require("mongoose");
 const User = require("../models/user");
 const passport = require("passport");
 
+const emailRegex = /^(?=.{1,40}$)[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const nameRegex = /^(?=.{1,40}$)[A-Za-z ]+$/;
+const passwordLength = 30;
+
+const normalizeEmail = (email) => {
+  return email.toLowerCase().trim();
+  }
+
+
 const register = async (req, res) => {
   //Validate message to ensure that all parameters are present
   if (!req.body.name || !req.body.email || !req.body.password) {
     return res.status(400).json({ message: "All fields required" });
   }
 
+  //Validate that the email is compliant and name is limited to 40 characters. PW Will be limited to 30 chars.
+  if (!emailRegex.test(req.body.email) || !nameRegex.test(req.body.name || req.body.password.length() > passwordLength )){
+    return res.status(400).json({ message: "Please check your request: name is limited to 40 characters, password is limited to 30 characters, and must be a valid email."})
+  }
+
+  const cleanEmail = normalizeEmail(req.body.email);
+
+  const exists = await User.exists({ email: cleanEmail });
+    if (exists) {
+      return res.status(409).json({ message: "Email is already in use." });
+    }
+
   const user = new User({
     name: req.body.name,
-    email: req.body.email,
+    email: cleanEmail,
     password: "",
   });
   user.setPassword(req.body.password);
