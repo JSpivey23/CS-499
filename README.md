@@ -12,6 +12,22 @@ The customer facing project is available at localhost:3000
 
 The JWT secret is not provided. You will need to make your own and submit it in the base folder of the project with the file name ".env"
 
+Endpoints:
+
+POST /register — create a user account (expects name, email, password).
+
+POST /login — authenticate and receive a JWT. -rate limited ip & username
+
+GET /trips — list all trips. -rate limited
+
+Example:  GET localhost:3000/api/trips
+
+POST /trips — add a trip (JWT required via Authorization: Bearer <token>). -rate limited
+
+GET /trips/:tripCode — fetch a single trip by its code. -RATE LIMITED
+
+PUT /trips/:tripCode — update a trip (JWT required). -RATE LIMITED
+
 
 ***FROM ORIGINAL PROJECT***
 
