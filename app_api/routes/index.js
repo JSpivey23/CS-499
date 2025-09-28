@@ -5,9 +5,13 @@ const User = require("../models/user");
 
 const tripsController = require("../controllers/trips");
 const authController = require("../controllers/authentication");
+const {
+  tripsGetLimiter, tripsPutLimiter, tripsPostLimiter, loginIpLimiter, loginUserLimiter
+} = require("../utils/limiters");
+
 
 router.route("/register").post(authController.register);
-router.route("/login").post(authController.login);
+router.route("/login").post(loginIpLimiter, loginUserLimiter,authController.login);
 
 //Method to authenticate our JWT
 async function authenticateJWT(req, res, next) {
@@ -35,13 +39,13 @@ async function authenticateJWT(req, res, next) {
 
 router
   .route("/trips")
-  .get(tripsController.tripsList) //Get method routes triplist
-  .post(authenticateJWT, tripsController.tripsAddTrip); //Post method that adds a trip
+  .get(tripsGetLimiter, tripsController.tripsList) //Get method routes triplist
+  .post(authenticateJWT, tripsPostLimiter, tripsController.tripsAddTrip); //Post method that adds a trip
 
 //Get Method routes tripsFindByCode - requires Parameter
 router
   .route("/trips/:tripCode")
-  .get(tripsController.tripsFindByCode)
-  .put(authenticateJWT, tripsController.tripsUpdateTrip);
+  .get(tripsGetLimiter, tripsController.tripsFindByCode)
+  .put(authenticateJWT, tripsPutLimiter, tripsController.tripsUpdateTrip);
 
 module.exports = router;
